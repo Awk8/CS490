@@ -2,29 +2,25 @@
   <body>
     <?php
       include ("../dbaccount.php");
-
-      $db = mysql_connect ($dbHost, $dbUser, $dbPass);
-
-      mysql_select_db($database);
-
+      mysql_connect ($dbHost, $dbUser, $dbPass);
+    
+      mysql_select_db('awk8');
+    
       $user = mysql_real_escape_string($_POST["user"]);
       $pass = mysql_real_escape_string($_POST["pass"]); 
-      $uuid = mysql_real_escape_string($_POST["uuid"]); 
-
+    
       $query = "SELECT * FROM Users WHERE user='$user' AND pass='$pass'";
-      
-      $result = mysql_query ( $query )
-
-      if ($result != FALSE)
+      $result = mysql_query($query);
+      $rows = mysql_num_rows($result);
+    
+      if ($rows >= 1)
       {
         print "Pass";
       } else
       {
         print "Fail";
       }
-      
-      mysql_close($db);
-      exit();
+      exit;
     ?>
-  </body>
-</html>
+  </html>
+</body>
