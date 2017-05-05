@@ -15,7 +15,9 @@ switch ($function) {
         $q = mysql_real_escape_string($_POST["question"]);
         $d = mysql_real_escape_string($_POST["diff"]);
         $c = mysql_real_escape_string($_POST["cases"]);
-        makeQuestion($q,$d,$c);
+        $qu = str_replace("+","\+",$q);
+        $ca = str_replace("+","\+",$c);
+        makeQuestion($qu,$d,$ca);
         break;
     case 3: 
         getQuestions();
@@ -44,9 +46,11 @@ switch ($function) {
         $user = $_POST["user"];
         $question = $_POST["question"];
         $correct = $_POST["correct"];
-        $answer = mysql_real_escape_string($_POST["answer"]);
-        $case = mysql_real_escape_string($_POST["case"]);
-        answerQuestion($user,$examID,$question,$correct,$answer,$case);
+        $a = mysql_real_escape_string($_POST["answer"]);
+        $answer = str_replace("+","\+",$a);
+        $cases = mysql_real_escape_string($_POST["cases"]);
+        $log = mysql_real_escape_string($_POST["log"]);        
+        answerQuestion($user,$examID,$question,$correct,$answer,$cases,$log);
         break;
     case 9:
         getExamsAnswered();
@@ -68,7 +72,7 @@ switch ($function) {
         $feedback = mysql_real_escape_string($_POST["feedback"]);
         insertGrades($examID,$user,$grade,$feedback);
         break;
-    case 13:
+    case 13:        
         $user = mysql_real_escape_string($_POST["user"]);
         getExamResult($user);
         break;
@@ -87,6 +91,14 @@ switch ($function) {
         $question = mysql_real_escape_string($_POST["question"]);
         $grade = mysql_real_escape_string($_POST["grade"]);
         updateQuestionGrade($user,$exam,$question,$grade);
+        break;
+  case 17:
+        $id = mysql_real_escape_string($_POST["questions"]);
+        getSpecQuestion($id);
+        break;
+    case 20:
+        $in = mysql_real_escape_string($_POST["in"]);
+        test($in);
         break;
     default:;
 }
@@ -181,10 +193,20 @@ function getQuestion($ids){
 }
 
 //8
-function answerQuestion($user,$exam,$question,$correct,$answer,$cases){
-  $query = "INSERT INTO `answers` VALUES ('$exam','$question','$answer','$correct','$user','$cases')";
- ( $queryRes = mysql_query ( $query ) ) or die ( mysql_error() );
+function answerQuestion($user,$exam,$question,$correct,$answer,$cases,$log){
+  $query = "INSERT INTO `answers` VALUES ('$exam','$question','$answer','$correct','$user','$cases','','$log')";
+  $query2 = "UPDATE `answers` a, `exams` e SET a.Points = e.Points WHERE e.id = a.exam";
+  $query3 = "UPDATE `answers` a, `questions` q SET a.case1 = q.case1 WHERE q.id = a.question";
 
+ ( $queryRes = mysql_query ( $query ) ) or die ( mysql_error() );
+ ( $queryRes1 = mysql_query ( $query2 ) ) or die ( mysql_error() );
+ ( $queryRes2 = mysql_query ( $query3 ) ) or die ( mysql_error() );
+ if(mysql_num_rows ($queryRes2) >= 1){
+    $row3 = mysql_fetch_array($queryRes2);
+  } 
+ if(mysql_num_rows ($queryRes1) >= 1){
+    $row2 = mysql_fetch_array($queryRes1);
+  } 
  if(mysql_num_rows ($queryRes) >= 1){
     $row = mysql_fetch_array($queryRes);
     print json_encode($row);
@@ -193,7 +215,7 @@ function answerQuestion($user,$exam,$question,$correct,$answer,$cases){
 
 //9
 function getExamsAnswered(){
-  $query = "SELECT DISTINCT a.exam, a.username, b.title FROM answers a,exams b WHERE a.exam = b.id AND (a.exam NOT IN (SELECT grades.exam FROM grades WHERE grades.username = a.username)) ";
+  $query = "SELECT DISTINCT a.exam, a.username, b.title FROM answers a,exams b WHERE a.exam = b.id AND (a.exam NOT IN (SELECT grades.exam FROM grades WHERE grades.username = a.username))";
   ( $queryRes = mysql_query ( $query ) ) or die ( mysql_error() );
   $emparray = array();
   if(mysql_num_rows ($queryRes) >= 1){
@@ -224,9 +246,13 @@ $query = "SELECT SUM(correct) AS correct FROM answers WHERE username='$user' AND
 
 //12
 function insertGrades($exam,$username,$grade,$feedback){
- $query = "INSERT INTO grades VALUES ('$exam','$username','$grade','$feedback','1')";
+ $query = "INSERT INTO grades VALUES ('$exam','$username','$grade','$feedback','')";
+ $query2 = "UPDATE `grades` a, `exams` e SET a.title = e.title WHERE e.id = a.exam";
  ( $queryRes = mysql_query ( $query ) ) or die ( mysql_error() );
-
+ ( $queryRes1 = mysql_query ( $query2 ) ) or die ( mysql_error() );
+ if(mysql_num_rows ($queryRes1) >= 1){
+    $row2 = mysql_fetch_array($queryRes1);
+  } 
  if(mysql_num_rows ($queryRes) >= 1){
     $row = mysql_fetch_array($queryRes);
     print json_encode($row);
@@ -235,7 +261,7 @@ function insertGrades($exam,$username,$grade,$feedback){
 
 //13
 function getExamResult($username){
- $query = "SELECT * FROM grades,exams WHERE grades.exam = exams.id and username='$username' and state='1'";
+ $query = "SELECT * FROM grades WHERE username='$username'";
  ( $queryRes = mysql_query ( $query ) ) or die ( mysql_error() );
 
  $emparray = array();
@@ -282,6 +308,30 @@ function updateQuestionGrade($user,$exam,$question,$grade){
      $row = mysql_fetch_array($queryRes);
      print json_encode($row);
    }
+}
+
+//17
+function getSpecQuestion($id){
+  $query = "SELECT * FROM questions WHERE id='$id'";
+	( $queryRes = mysql_query ( $query ) ) or die ( mysql_error() );
+  $emparray = array();
+	if(mysql_num_rows ($queryRes) >= 1){
+     while ($row = mysql_fetch_array($queryRes)) {
+       $emparray[]= $row;
+     }
+    print json_encode($emparray);
+  }
+}
+
+//20 - tst
+function test($in)
+{
+ $query = "INSERT INTO test VALUES ('$in')";
+ ( $queryRes = mysql_query ( $query ) ) or die ( mysql_error() );
+ if(mysql_num_rows ($queryRes) >= 1){
+    $row = mysql_fetch_array($queryRes);
+    print json_encode($row);
+  }
 }
 mysql_close($dbh);
 exit();
