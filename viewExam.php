@@ -55,13 +55,8 @@ for($x = 0; $x < sizeof($b); $x++){
   $qKeyAns = $b[$x]['answer'];
   $qGivenPoints = $c[$x]['correct'];
   $cases = explode(":",$c[$x]['case']);
-  $allCases = "";
-  for($i = 0; $i < sizeof($cases); $i++){
-    $allCases .= $cases[$i]."  ";
-  }
   echo "<h3>$qNum.) $qQuest";
   echo "<br><textarea readonly style='width:300px;height:175px;'>$qUserAns</textarea><textarea readonly style='width:300px;height:175px;border-color:green;border-width:3px;'>$qKeyAns</textarea><br>";
-  echo "Cases Correct:".$allCases;
   echo "<br>Points:".$qGivenPoints;
 }
 $feedback = $_POST["feedback".$examId];

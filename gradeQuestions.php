@@ -22,7 +22,7 @@ if(isset($_POST['graded'])){
   for($i=0; $i < sizeof($questions); $i++){
     $info = array();
     $info["user"] = $_POST["user"];
-    $info["examId"]  = $_POST["examId"];
+    $info["examID"]  = $_POST["examId"];
     $info["question"]  = trim($questions[$i]);
     $given = $_POST[trim($questions[$i])."_given"];
     $total = $_POST[trim($questions[$i])."_total"];
@@ -33,6 +33,7 @@ if(isset($_POST['graded'])){
   $info = array();
   $info = $_POST;
   $info["grade"] = $_POST["score"]."/".$_POST["total"];
+  $info["examID"]  = $_POST["examId"];  
   $json_obj = json_encode(array( "releaseGrades"=> $info ));
   $b = toMID($json_obj);
   $b = "The Exam have been released to the students.";
@@ -50,15 +51,15 @@ if(isset($_POST['submit'])){
   }
   $username = $_POST['user'];
 
-  $json_obj = json_encode(array( "selectExamObject"=> array($examId => null) ));
+  $json_obj = json_encode(array( "selectExamObject"=> array($examId => null) ));//6 exams
   $result = toMID($json_obj);
   $a = json_decode($result,true);
 
-  $json_obj2 = json_encode(array( "getExamQuestions"=> $a[0]["questions"]));
+  $json_obj2 = json_encode(array( "getExamQuestions"=> $a[0]["questions"]));//7 questions
   $result2 = toMID($json_obj2);
   $b = json_decode($result2,true);
 
-  $json_obj3 = json_encode(array( "getAnsweredQuestions"=> array('examId' => $examId, 'user' => $username) ));
+  $json_obj3 = json_encode(array( "getAnsweredQuestions"=> array('examId' => $examId, 'user' => $username) ));//15 answers
   $result3 = toMID($json_obj3);
   $c = json_decode($result3,true);
 }
@@ -75,14 +76,18 @@ if(isset($_POST['submit'])){
  echo "<input name='examId' hidden value='$examId'>";
  echo "<input name='user' hidden value='$username'>";
  echo "<input name='questions' hidden value='$questions'>";
- for($x = 0; $x < sizeof($b); $x++){
-   $qNum = $x+1;
+ for($x = 0; $x < sizeof($c); $x++){
+   $qNum = $x+1;   
    $qQuest = $b[$x]["question"];
    $qId = $b[$x]["id"];
    $qDiff = $b[$x]["difficulty"];
    $qUserAns = $c[$x]['answer'];
-   $qKeyAns = $b[$x]['answer'];
+   $qLog = $b[$x]['log'];
    $qGivenPoints = $c[$x]['correct'];
+   $ansQs = $c[$x]["question"];
+   $pnts =  preg_replace('/,+/', ',',$c[$x]['Points']);
+   $pnts = ltrim($pnts, ',');
+   $points = explode(",",$pnts);
    $cases = explode(":",$c[$x]['case']);
    $allCases = "";
    for($i = 0; $i < sizeof($cases); $i++){
@@ -90,8 +95,8 @@ if(isset($_POST['submit'])){
    }
    echo "<h3>$qNum. $qQuest</h3>";
    echo "Points Given: <input type=text class='Gpoints' name='$qId.given' value='$qGivenPoints' onChange='updateTotal()'><br>";
-   echo "<br>Total Points: <input type=text class='Qpoints' name='$qId.total' value='5' onChange='updateTotal()'><br>";
-   echo "<br><textarea readonly style='width:200px;height:125px;' >$qUserAns</textarea><textarea readonly style='width:200px;height:125px;border-color:green;border-width:3px;'>$qKeyAns</textarea><br>";
+   echo "<br>Total Points: <input type=text class='Qpoints' name='$qId.total' value='$points[$x]' onChange='updateTotal()'><br>";
+   echo "<br><textarea readonly style='width:200px;height:125px;' >$qUserAns</textarea><textarea readonly style='width:200px;height:125px;border-color:green;border-width:3px;'>$qLog</textarea><br>";
    echo "Cases Correct:".$allCases;
  }
 

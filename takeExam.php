@@ -16,7 +16,7 @@ auth($role);
 nav($role);
 
 
-if(isset($_POST['submit'])){ //check if form was submitted
+if(isset($_POST['submit'])){ 
   $json_obj = json_encode(array( "selectExamObject"=> $_POST ));
   $result = toMID($json_obj);
   $a = json_decode($result,true);

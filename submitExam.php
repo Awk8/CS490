@@ -21,7 +21,7 @@ if(isset($_POST['submit'])){ //check if form was submitted
   $json_obj = json_encode(array( "submitExamObject"=> $_POST ));
   $result = toMID($json_obj);
   //$message = json_decode($result,true);
-  $message = "Exam submitted. <br>Please wait for professor to release grades.";
+  $message = "Exam submitted. <br>Please wait for the professor to release grades.";
 }
  ?>
  <h2>

@@ -103,7 +103,7 @@
       cell2.innerHTML = ques;
       cell3.innerHTML = diff;
       cell4.innerHTML = case1;
-      cell5.innerHTML = "<input type='text' id='points' name='points[]' onkeyup='checkInput(this)' placeholder='10'/>";
+      cell5.innerHTML = "<input type='text' id='points' name='points[]' onkeyup='checkInput(this)' placeholder='0'/>";
     }
     function search()
     {

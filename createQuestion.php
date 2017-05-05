@@ -57,11 +57,21 @@ $message = "<pre>Question added!</pre>";
     </select>  
     <br>
     <br>  
-    <label>Question: </label>  
-    <br>  
-    <textarea id="question" name="question" style="width:400px; height:100px;" placeholder="Please write the question here..." required></textarea>  
+    <label>Method Name: </label> 
+    <br> 
+    <textarea id="question" name="question[]" style="width:400px; height:20px;" placeholder="Method name..." required></textarea>  
     <br>
-    <br>  
+    <br>
+    <label>Parameters: </label>  
+    <br>
+    <textarea id="question" name="question[]" style="width:400px; height:20px;" placeholder="int a, int b,..." required></textarea>  
+    <br>
+    <br>
+    <label>Method Functionality: </label>  
+    <br>
+    <textarea id="question" name="question[]" style="width:400px; height:100px;" placeholder="This method..." required></textarea>  
+    <br>
+    <br> 
     <label>Test Case 1: </label> 
     <br>     
     <textarea id="frontCases" name="frontCases[]" style="width:400px; height:50px;" placeholder="param1,param2,...,paramN,ExpectedResult" required></textarea>  

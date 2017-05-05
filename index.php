@@ -29,22 +29,34 @@
         <br>
       </center>
     </div>
-    <div id=”top-left” style="border:1px solid black; margin: 0 auto; width:200px;">
-    <strong>Usage:
-    <br>
-    Professor Login:
-    <br>
-    Username: prof 
-    <br>
-    Password: prof
-    <br>
-    <br>
-    Student Login:
-    <br>
-    Username: awk8 
-    <br>
-    Password: kelson</strong>
-    </div>
+      <table id=”bottom_left”>
+      <tr>
+        <th>Access:</th>
+        <th>Username:</th> 
+        <th>Password:</th>
+      </tr>
+      <tr>
+        <td>Professor</td>
+        <td>prof</td> 
+        <td>prof</td>
+      </tr>
+      <tr>
+        <td>Student</td>
+        <td>awk8</td> 
+        <td>kelson</td>
+      </tr>
+      <tr>
+        <th colspan="3">Created by:</th>
+      </tr>
+      <tr>
+        <td colspan="2">Andrew Kelson</td>
+        <td>Front/Back</td>
+      </tr>
+      <tr>
+      <td colspan="2">Kevin Chan</td>
+      <td>Middle</td>
+      </tr>
+    </table>
   </body>
 </html>
 <script>
